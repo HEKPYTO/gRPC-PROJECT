@@ -1,6 +1,6 @@
 // src/codec/mod.rs
-use bytes::BytesMut;
 use crate::Error;
+use bytes::BytesMut;
 
 pub mod compression;
 pub mod frame;
@@ -58,7 +58,10 @@ mod tests {
     #[test]
     fn test_codec_new() {
         let codec = GrpcCodec::new();
-        assert_eq!(codec.max_message_size, crate::client::DEFAULT_MAX_FRAME_SIZE);
+        assert_eq!(
+            codec.max_message_size,
+            crate::client::DEFAULT_MAX_FRAME_SIZE
+        );
     }
 
     #[test]

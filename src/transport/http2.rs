@@ -1,6 +1,6 @@
 // src/transport/http2.rs
-use crate::{Error, Result};
 use crate::transport::Transport;
+use crate::{Error, Result};
 use bytes::Bytes;
 use futures_util::future::BoxFuture;
 use h2::client::SendRequest;
@@ -35,23 +35,26 @@ impl Transport for Http2Transport {
                 .body(())
                 .map_err(Error::Http)?;
 
-            let (response, mut send_stream) = self.send_request
+            let (response, mut send_stream) = self
+                .send_request
                 .send_request(request, false)
                 .map_err(Error::Transport)?;
 
-            send_stream.send_data(data, true)
+            send_stream
+                .send_data(data, true)
                 .map_err(Error::Transport)?;
 
             let response = response.await.map_err(Error::Transport)?;
             let (_parts, mut body) = response.into_parts();
-            
+
             let mut bytes = Vec::new();
             while let Some(chunk) = body.data().await {
                 let chunk = chunk.map_err(Error::Transport)?;
                 bytes.extend_from_slice(&chunk);
             }
 
-            sender.send(Ok(Bytes::from(bytes)))
+            sender
+                .send(Ok(Bytes::from(bytes)))
                 .map_err(|_| Error::SendError)?;
 
             Ok(())
