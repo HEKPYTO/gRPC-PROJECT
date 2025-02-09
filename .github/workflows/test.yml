@@ -6,11 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
           components: rustfmt
-          override: true
       - run: cargo fmt --all -- --check
 
   clippy:
@@ -18,11 +16,9 @@ jobs:
     needs: format
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
           components: clippy
-          override: true
       - run: cargo clippy -- -D warnings
 
   gitleaks:
@@ -37,10 +33,7 @@ jobs:
     needs: gitleaks
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+      - uses: dtolnay/rust-toolchain@stable
       - run: cargo test
 
   test-release:
@@ -48,8 +41,5 @@ jobs:
     needs: gitleaks
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+      - uses: dtolnay/rust-toolchain@stable
       - run: cargo test --release
